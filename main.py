@@ -9,6 +9,8 @@ if name.find(".")==-1:
         name += ("." + ext)
     else:
         name += ext
-    LogE.d("modify", f"file name is modified to '{name}'")
+    LogE.g("modify", f"file name is modified to '{name}'")
     
-LogE.d("song name", name)
+LogE.g("song name", name)
+
+song = eyed3.load(name)
