@@ -58,8 +58,10 @@ def change_meta():
         print(x)
 
     save_yn = input("is it correct?[Y/n]: ")
-    if save_yn == "Y" or save_yn == "y":
-        song.save()
+    if save_yn == "N" or save_yn == "n":
+        pass
+    else:
+        song.save(version=eyed3.id3.ID3_V2_3)
 
 mode = input("What do you want?[change metadata/command mode]: ")
 
