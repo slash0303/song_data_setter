@@ -71,7 +71,7 @@ def change_meta():
                 LogE.e("FileNotFoundError", f"path '{data_input}' is wrong path.")
                 input_list[x] = ""
 
-    # re-check input value
+    # check input value before saving data
     for x in input_list.keys():
         if input_list[x] == "":
             i = "[None]"
