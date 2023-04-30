@@ -6,10 +6,10 @@ from eaxtension import LogE
 command_alias = {"ls": "" }
 
 # metadata: change manual
-meta_man = ["song name",
-            "artist name",
-            "album",
-            "album artist",
+meta_man = ["title of song",
+            "name of artist",
+            "name of album",
+            "name of album artist",
             "lyrics (txt file location)",]
 
 # metadata change function
@@ -41,8 +41,6 @@ def change_meta():
 
     LogE.g("music file name", name)
 
-
-
     # metadata: mode index - function mapping
     meta_alias = {0: song.title,
                   1: song.artist,
@@ -51,11 +49,22 @@ def change_meta():
                   4: song.lyrics}
 
     # change meta data
-    for i, x in enumerate(meta_man):
+    for x in meta_man:
         data_input = input("Enter '" + x + "' (pass key: /!/): ")
         if data_input == "/!/":
             continue
-        meta_alias[i] = data_input
+        if x == "title of song":
+            song.title = data_input
+        elif x == "name of artist":
+            song.artist = data_input
+        elif x == "name of album":
+            song.album = data_input
+        elif x == "name of album artist":
+            song.album_artist
+        elif x.find("lyrics") != -1:
+            lyr_dir = x
+            with open(lyr_dir, "r", encoding="utf-8") as lyr:
+                song.lyrics = lyr
 
     # re-check input value
     for x in meta_alias.values():
