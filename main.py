@@ -23,7 +23,7 @@ def change_meta():
                 pass
                 # TODO : make command feature
             # file name intergrity check
-            elif name.find(".mp3")==-1 or name.find(".wav")==-1 or name.find(".flac")==-1:
+            elif name.find(".mp3")==-1 and name.find(".wav")==-1 and name.find(".flac")==-1:
                 ext = input("extension cannot found. please enter the extension: ")
                 if ext.find(".")==-1:
                     name += ("." + ext)
@@ -31,8 +31,9 @@ def change_meta():
                     name += ext
 
                 # music load
-                song = eyed3.load(name).tag
-                break
+            song = eyed3.load(name)
+            song = song.tag
+            break
         except:
             print("file name is incorrect. please re-write file name.")
 
@@ -51,12 +52,14 @@ def change_meta():
 
     # change meta data
     for i, x in enumerate(meta_man):
-        a = input("Enter '" + x + "' (pass key: /!/): ")
-        meta_alias[i] = a
+        data_input = input("Enter '" + x + "' (pass key: /!/): ")
+        if data_input == "/!/":
+            continue
+        meta_alias[i] = data_input
 
+    # re-check input value
     for x in meta_alias.values():
         print(x)
-
     save_yn = input("is it correct?[Y/n]: ")
     if save_yn == "N" or save_yn == "n":
         pass
