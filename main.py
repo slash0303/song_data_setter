@@ -10,7 +10,7 @@ meta_man = ["title of song",
             "name of artist",
             "name of album",
             "name of album artist",
-            "lyrics (txt file location)",]
+            "lyrics (txt file path)",]
 
 # metadata change function
 def change_meta():
@@ -41,34 +41,43 @@ def change_meta():
 
     LogE.g("music file name", name)
 
-    # metadata: mode index - function mapping
-    meta_alias = {0: song.title,
-                  1: song.artist,
-                  2: song.album,
-                  3: song.album_artist,
-                  4: song.lyrics}
+    input_list = {}
 
     # change meta data
     for x in meta_man:
         data_input = input("Enter '" + x + "' (pass key: /!/): ")
         if data_input == "/!/":
+            input_list[x] = ""
             continue
         if x == "title of song":
             song.title = data_input
+            input_list[x] = data_input
         elif x == "name of artist":
             song.artist = data_input
+            input_list[x] = data_input
         elif x == "name of album":
             song.album = data_input
+            input_list[x] = data_input
         elif x == "name of album artist":
-            song.album_artist
+            song.album_artist = data_input
+            input_list[x] = data_input
         elif x.find("lyrics") != -1:
             lyr_dir = x
-            with open(lyr_dir, "r", encoding="utf-8") as lyr:
-                song.lyrics = lyr
+            try:
+                with open(lyr_dir, "r", encoding="utf-8") as lyr:
+                    song.lyrics = lyr
+                input_list[x] = data_input
+            except:
+                LogE.e("FileNotFoundError", f"path '{data_input}' is wrong path.")
+                input_list[x] = ""
 
     # re-check input value
-    for x in meta_alias.values():
-        print(x)
+    for x in input_list.keys():
+        if input_list[x] == "":
+            i = "[None]"
+        else:
+            i = input_list[x]
+        LogE.g(x, i)
     save_yn = input("is it correct?[Y/n]: ")
     if save_yn == "N" or save_yn == "n":
         pass
