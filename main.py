@@ -95,7 +95,7 @@ def change_meta_manual():
         song.save(version=eyed3.id3.ID3_V2_3)
 
 def change_meta_auto():
-    #TODO use beautifulsoup to find data of song in internet.
+    #TODO use beautifulsoup or spotify web api to find data of song in internet.
     pass
 
 # select mode
@@ -114,15 +114,14 @@ if "change metadata".find(mode) != -1:
             else:
                 try:
                     os.chdir(path)
-                    break;
+                    break
                 except Exception as e:
                     LogE.e(e, f"path '{path}'is wrong path.")
         # select all or decide in automatic menu
         mode = input("all of file / decide: ")
         if "all of file".find(mode) != -1:
             file_list = []
-            glob_list = ["*.mp3", "*.m4a", "*.mpeg", ".wav"]
-            for x in glob_list:
+            for x in ext_list:
                 file_list += glob.glob("*"+x)
             for file in file_list:
                 change_meta_auto()
