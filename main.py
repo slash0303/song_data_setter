@@ -1,5 +1,6 @@
 import eyed3
 import os
+import glob
 from eaxtension import LogE
 
 # command mode: - fucntion alias
@@ -12,8 +13,11 @@ meta_man = ["title of song",
             "name of album artist",
             "lyrics (txt file path)",]
 
+ext_list = [".mp3", ".wav", ".m4a", ".mpeg"]
+ext_in = False
+
 # metadata change function
-def change_meta():
+def change_meta_manual():
     while True:
         try:
             name = input("Enter file name: ")
@@ -21,14 +25,20 @@ def change_meta():
             # command
             if name[0] == "/":
                 pass
-                # TODO : make command feature
+                # TODO make command feature
             # file name intergrity check
-            elif name.find(".mp3")==-1 and name.find(".wav")==-1 and name.find(".flac")==-1:
-                ext = input("extension cannot found. please enter the extension: ")
-                if ext.find(".")==-1:
-                    name += ("." + ext)
+            else:
+                for x in ext_list:
+                    if name.find(x) != -1:
+                        ex_in = True
+                if ext_in:
+                    pass
                 else:
-                    name += ext
+                    ext = input("extension cannot found. please enter the extension: ")
+                    if ext.find(".")==-1:
+                        name += ("." + ext)
+                    else:
+                        name += ext
 
                 # music load
             song = eyed3.load(name)
@@ -74,7 +84,7 @@ def change_meta():
     # check input value before saving data
     for x in input_list.keys():
         if input_list[x] == "":
-            i = "[None]"
+            i = "[Unchanged]"
         else:
             i = input_list[x]
         LogE.g(x, i)
@@ -84,11 +94,42 @@ def change_meta():
     else:
         song.save(version=eyed3.id3.ID3_V2_3)
 
-mode = input("What do you want?[change metadata/command mode]: ")
+def change_meta_auto():
+    #TODO use beautifulsoup to find data of song in internet.
+    pass
 
+# select mode
+mode = input("What do you want?[change metadata/command mode]: ")
 if "change metadata".find(mode) != -1:
-    change_meta()
+    # select manual or automatic
+    mode = input("manual / automatic: ")
+    if "manual".find(mode) != -1:
+        change_meta_manual()
+    elif "automatic".find(mode) != -1:
+        # input path and intergrity test
+        while True:
+            path = input("please enter working path(default value is pwd): ")
+            if path == "":
+                pass
+            else:
+                try:
+                    os.chdir(path)
+                    break;
+                except Exception as e:
+                    LogE.e(e, f"path '{path}'is wrong path.")
+        # select all or decide in automatic menu
+        mode = input("all of file / decide: ")
+        if "all of file".find(mode) != -1:
+            file_list = []
+            glob_list = ["*.mp3", "*.m4a", "*.mpeg", ".wav"]
+            for x in glob_list:
+                file_list += glob.glob("*"+x)
+            for file in file_list:
+                change_meta_auto()
+        elif "decide".find(mode) != -1:
+            pass
+            #TODO get file name from user input and modify one of file
 
 elif "command mode".find(mode) != -1:
     pass
-    # TODO : make command feature
+    # TODO make command feature
