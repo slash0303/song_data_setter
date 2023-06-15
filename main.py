@@ -2,25 +2,24 @@ import eyed3
 import os
 import glob
 from eaxtension import LogE
-
-# command mode: - fucntion alias
-command_alias = {"ls": "" }
+from bs4 import BeautifulSoup as bs
+from pytube import YouTube
 
 # metadata: change manual
 meta_man = ["title of song",
             "name of artist",
             "name of album",
             "name of album artist",
-            "lyrics (txt file path)",]
+            "lyrics (only path without file name)",]
 
 ext_list = [".mp3", ".wav", ".m4a", ".mpeg"]
 ext_in = False
 
-# metadata change function
+# metadata change function (manually)
 def change_meta_manual():
     while True:
         try:
-            name = input("Enter file name: ")
+            name = input("Enter target file name: ")
 
             # command
             if name[0] == "/":
@@ -29,25 +28,25 @@ def change_meta_manual():
             # file name intergrity check
             else:
                 for x in ext_list:
-                    if name.find(x) != -1:
-                        ex_in = True
+                    if name.find(x) < 0:
+                        ext_in = True
                 if ext_in:
                     pass
                 else:
                     ext = input("extension cannot found. please enter the extension: ")
-                    if ext.find(".")==-1:
+                    if ext.find(".")<0:
                         name += ("." + ext)
                     else:
                         name += ext
 
-                # music load
+            # music load
             song = eyed3.load(name)
             song = song.tag
             break
         except:
             print("file name is incorrect. please re-write file name.")
 
-    LogE.g("modify", f"file name is modified to '{name}'")
+    LogE.g("modify", f"file name input is modified to '{name}'")
 
     LogE.g("music file name", name)
 
@@ -72,16 +71,20 @@ def change_meta_manual():
             song.album_artist = data_input
             input_list[x] = data_input
         elif x.find("lyrics") != -1:
-            lyr_dir = x
+            lyr_dir = data_input
             try:
-                with open(lyr_dir, "r", encoding="utf-8") as lyr:
-                    song.lyrics = lyr
+                os.chdir(lyr_dir)
+                lyr_name = input("Enter file name: ")
+                with open(lyr_name, "r", encoding="utf-8") as lyr:
+                    lyr = lyr.readlines()
+                    lyr = "".join(lyr)
+                    song.lyrics.set(lyr)
                 input_list[x] = data_input
-            except:
-                LogE.e("FileNotFoundError", f"path '{data_input}' is wrong path.")
+            except Exception as e:
+                LogE.e("", e)
                 input_list[x] = ""
 
-    # check input value before saving data
+    # re-check input value before saving data
     for x in input_list.keys():
         if input_list[x] == "":
             i = "[Unchanged]"
@@ -98,17 +101,17 @@ def change_meta_auto():
     #TODO use beautifulsoup or spotify web api to find data of song in internet.
     pass
 
-# select mode
+# main
 mode = input("What do you want?[change metadata/command mode]: ")
 if "change metadata".find(mode) != -1:
     # select manual or automatic
-    mode = input("manual / automatic: ")
+    mode = input("manual / autelvmfomatic: ")
     if "manual".find(mode) != -1:
         change_meta_manual()
     elif "automatic".find(mode) != -1:
         # input path and intergrity test
         while True:
-            path = input("please enter working path(default value is pwd): ")
+            path = input("please enter working path(default is pwd): ")
             if path == "":
                 pass
             else:
