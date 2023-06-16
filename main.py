@@ -28,8 +28,6 @@ def change_meta_manual():
                 # TODO make command feature
             # file name intergrity check
             else:
-                name = name.split(".")
-                name = name[0]
                 for x in ext_list:
                     if name.find(x) > 0:
                         ext_in_name = True
