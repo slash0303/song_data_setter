@@ -102,6 +102,8 @@ def change_meta_auto():
     #TODO use beautifulsoup or spotify web api to find data of song in internet.
     pass
 
+
+
 # main
 mode = input("What do you want?[change metadata/command mode]: ")
 if "change metadata".find(mode) != -1:
